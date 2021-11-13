@@ -2,7 +2,7 @@
 id: abtorrents
 name: ABtorrents
 description: "ABtorrents (ABT) is a Private Torrent Tracker for AUDIOBOOKS"
-language: en-us
+language: en-US
 type: private
 encoding: UTF-8
 links:
@@ -137,21 +137,29 @@ search:
       attribute: src
     files:
       selector: td:nth-last-child(8)
-    date:
-      # Sep 20 2020<br/>07:25 PM
-      selector: td:nth-last-child(7)
+    date_yday:
+      # Yesterday<br/>6:00 AM
+      selector: td:nth-last-child(7):contains("day")
+      optional: true
+      filters:
+        - name: append
+          args: " +00:00" # auto adjusted by site account profile
+        - name: fuzzytime
+    date_year:
+      # Aug 6 2021<br/>7:25 PM
+      selector: td:nth-last-child(7):not(:contains("day"))
+      optional: true
       filters:
         - name: append
           args: " +00:00" # auto adjusted by site account profile
         - name: dateparse
-          args: "Jan 2 2006 03:04 PM -07:00"
+          args: "Jan 2 2006 3:04 PM -07:00"
+    date:
+      text: "{{ if or .Result.date_yday .Result.date_year }}{{ or .Result.date_yday .Result.date_year }}{{ else }}now{{ end }}"
     size:
       selector: td:nth-last-child(6)
     grabs:
       selector: td:nth-last-child(5)
-      filters:
-        - name: regexp
-          args: (\d+)
     seeders:
       selector: td:nth-last-child(4)
     leechers:

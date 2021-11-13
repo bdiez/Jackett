@@ -2,15 +2,15 @@
 id: torrentdownloads
 name: Torrent Downloads
 description: "Torrent Downloads (TD) is a Public torrent site for all kinds of content"
-language: en-us
+language: en-US
 type: public
 encoding: UTF-8
 followredirect: true
 links:
   - https://www.torrentdownloads.info/
-  - https://www.torrentdownloads.me/
-  - https://torrentdownloads.unblockit.li/
-  - https://torrentdownloads.nocensor.space/
+  - https://www.torrentdownloads.pro/
+  - https://torrentdownloads.unblockit.bz/
+  - https://torrentdownloads.nocensor.biz/
 legacylinks:
   - https://torrentdownloads.unblockit.pro/
   - https://torrentdownloads.unblockit.one/
@@ -37,6 +37,14 @@ legacylinks:
   - https://torrentdownloads.unblocked.monster/
   - https://torrentdownloads.unblockit.club/
   - https://torrentdownloads.unblockit.onl/
+  - https://torrentdownloads.unblockit.li/
+  - https://torrentdownloads.unblockit.uno/
+  - https://www.torrentdownloads.me/
+  - https://torrentdownloads.unblockit.ch/
+  - https://torrentdownloads.nocensor.space/
+  - https://torrentdownloads.unblockit.ws/
+  - https://torrentdownloads.nocensor.work/
+  - https://torrentdownloads.unblockit.kim/
 
 caps:
   categorymappings:
@@ -88,6 +96,7 @@ download:
 search:
   paths:
     - path: "{{ if .Keywords }}/search/{{ else }}/today/{{ end }}"
+      followredirect: true
   inputs:
     $raw: "{{ range .Categories }}s_cat={{.}}&{{end}}"
     search: "{{ .Keywords }}"

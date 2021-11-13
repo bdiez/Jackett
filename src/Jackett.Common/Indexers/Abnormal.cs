@@ -73,7 +73,7 @@ namespace Jackett.Common.Indexers
                    )
         {
             Encoding = Encoding.UTF8;
-            Language = "fr-fr";
+            Language = "fr-FR";
             Type = "private";
 
             AddCategoryMapping(1, TorznabCatType.TV, "Series");
@@ -264,7 +264,7 @@ namespace Jackett.Common.Indexers
                                     Grabs = int.Parse(Regex.Match(completed, @"\d+").Value) + int.Parse(Regex.Match(leechers, @"\d+").Value),
                                     MinimumRatio = 1,
                                     MinimumSeedTime = 172800,
-                                    Size = ReleaseInfo.GetBytes(size.Replace(",", ".").Replace("Go", "gb").Replace("Mo", "mb").Replace("Ko", "kb")),
+                                    Size = ReleaseInfo.GetBytes(size.Replace("Go", "gb").Replace("Mo", "mb").Replace("Ko", "kb")),
                                     UploadVolumeFactor = 1,
                                     DownloadVolumeFactor = 1,
                                     PublishDate = DateTime.Now,

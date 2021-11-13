@@ -2,7 +2,7 @@
 id: wdt
 name: WDT
 description: "Wrestling Desires Torrents (Ultimate Wrestling Torrents) is a Private Torrent Tracker for PROFESSIONAL WRESTLING / MMA"
-language: en-us
+language: en-US
 type: private
 encoding: UTF-8
 links:
@@ -158,9 +158,6 @@ search:
       selector: td:nth-child(8)
     grabs:
       selector: td:nth-child(9)
-      filters:
-        - name: regexp
-          args: (\d+)
     seeders:
       selector: td:nth-child(10)
     leechers:

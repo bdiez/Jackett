@@ -42,22 +42,21 @@ namespace Jackett.Common.Services
         {
             {"audiobooktorrents", "abtorrents"},
             {"broadcastthenet", "broadcasthenet"},
-            {"cili180", "cilipro"},
             {"hdreactor", "hdhouse"},
             {"icetorrent", "speedapp"},
+            {"feedurneed", "devils-playground"},
             {"kickasstorrent-kathow", "kickasstorrents-ws"},
+            {"legacyhd", "reelflix"},
             {"leaguehd", "lemonhd"},
-            {"liaorencili", "cilipro"},
             {"metaliplayro", "romanianmetaltorrents"},
+            {"nbytez", "devils-playground"},
             {"nnm-club", "noname-club"},
             {"passtheheadphones", "redacted"},
             {"puntorrent", "puntotorrent"},
             {"rstorrent", "redstartorrent"},
             {"scenefz", "speedapp"},
-            {"skytorrentsclone2", "skytorrents-to"},
             {"tehconnectionme", "anthelion"},
             {"torrentgalaxyorg", "torrentgalaxy"},
-            {"torrentseed", "latinop2p"},
             {"transmithenet", "nebulance"},
             {"xtremezone", "speedapp"},
             {"yourexotic", "exoticaz"}
@@ -309,7 +308,7 @@ namespace Jackett.Common.Services
             logger.Info($"Test search in {indexer.DisplayName} => Found {result.Releases.Count()} releases");
 
             if (!result.Releases.Any())
-                throw new Exception("Found no results while trying to browse this tracker");
+                throw new Exception($"Test search in {indexer.DisplayName} => Found no results while trying to browse this tracker");
         }
 
         public void DeleteIndexer(string name)

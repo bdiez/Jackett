@@ -2,7 +2,7 @@
 id: torrentlt
 name: Torrent.LT
 description: "Torrent.LT is a LITHUANIAN Private Torrent Tracker for 0DAY / GENERAL"
-language: lt-lt
+language: lt-LT
 type: private
 encoding: UTF-8
 links:
@@ -137,6 +137,8 @@ search:
   keywordsfilters:
     - name: replace
       args: [".", " "] # issue #3296
+    - name: re_replace
+      args: ["[^\\w\\d\\(\\)]+", "%"]
 
   rows:
     selector: table> tbody > tr[class^="torrents-table__"]
@@ -163,16 +165,16 @@ search:
     poster:
       selector: div[class^="torrent-name"] a
       attribute: data-poster-preview
-    seeders:
-      text: 0
-    seeders:
+    seeders_optional:
       selector: td.seeders_cell:not(:has(i))
       optional: true
-    leechers:
-      text: 0
-    leechers:
+    seeders:
+      text: "{{ if .Result.seeders_optional }}{{ .Result.seeders_optional }}{{ else }}0{{ end }}"
+    leechers_optional:
       selector: td.leechers_cell:not(:has(i))
       optional: true
+    leechers:
+      text: "{{ if .Result.leechers_optional }}{{ .Result.leechers_optional }}{{ else }}0{{ end }}"
     size:
       selector: td.size_cell
     downloadvolumefactor:

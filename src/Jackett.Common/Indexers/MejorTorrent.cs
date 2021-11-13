@@ -36,8 +36,8 @@ namespace Jackett.Common.Indexers
         private const string SearchUrl = "secciones.php";
 
         public override string[] AlternativeSiteLinks { get; protected set; } = {
-            "https://www.mejortorrento.net/",
-            "https://mejortorrent.nocensor.space/"
+            "https://www.mejortorrentes.net/",
+            "https://mejortorrent.nocensor.biz/"
         };
 
         public override string[] LegacySiteLinks { get; protected set; } = {
@@ -50,7 +50,14 @@ namespace Jackett.Common.Indexers
             "https://www.mejortorrents.net/",
             "https://www.mejortorrents1.com/",
             "https://www.mejortorrents1.net/",
-            "https://www.mejortorrento.com/"
+            "https://www.mejortorrento.com/",
+            "https://www.mejortorrento.org/",
+            "https://www.mejortorrento.net/",
+            "https://www.mejortorrento.info/",
+            "https://mejortorrent.nocensor.space/",
+            "https://www.mejortorrentes.com/",
+            "https://www.mejortorrento.info/",
+            "https://mejortorrent.nocensor.work/"
         };
 
         public MejorTorrent(IIndexerConfigurationService configService, WebClient w, Logger l, IProtectionService ps,
@@ -58,7 +65,7 @@ namespace Jackett.Common.Indexers
             : base(id: "mejortorrent",
                    name: "MejorTorrent",
                    description: "MejorTorrent - Hay veces que un torrent viene mejor! :)",
-                   link: "https://www.mejortorrento.com/",
+                   link: "https://www.mejortorrentes.net/",
                    caps: new TorznabCapabilities
                    {
                        TvSearchParams = new List<TvSearchParam>
@@ -82,7 +89,7 @@ namespace Jackett.Common.Indexers
                    configData: new ConfigurationData())
         {
             Encoding = Encoding.UTF8;
-            Language = "es-es";
+            Language = "es-ES";
             Type = "public";
 
             var matchWords = new BoolConfigurationItem("Match words in title") { Value = true };
@@ -330,9 +337,9 @@ namespace Jackett.Common.Indexers
                     continue;
 
                 // guess size
-                var size = 524288000L; // 500 MB
+                var size = 536870912L; // 512 MB
                 if (episodeTitle.ToLower().Contains("720p"))
-                    size = 1288490188L; // 1.2 GB
+                    size = 1073741824L; // 1 GB
 
                 var release = GenerateRelease(episodeTitle, detailsStr, downloadLink, cat, episodePublish, size);
                 releases.Add(release);

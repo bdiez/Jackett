@@ -99,11 +99,8 @@ namespace Jackett.Common.Indexers
         private readonly string[] _voUrls = { "serie-vo", "serievo" };
 
         public override string[] AlternativeSiteLinks { get; protected set; } = {
-            "https://pctmix.com/",
-            "https://pctmix1.com/",
-            "https://pctreload1.com/",
-            "https://maxitorrent.com",
-            "https://pctmix1.unblockit.li/"
+            "https://atomixhq.one/",
+            "https://pctmix1.unblockit.bz/"
         };
 
         public override string[] LegacySiteLinks { get; protected set; } = {
@@ -117,7 +114,17 @@ namespace Jackett.Common.Indexers
             "http://pctnew.com/",
             "https://descargas2020.org/",
             "https://pctnew.org/",
-            "https://pctreload.com/"
+            "https://pctreload.com/",
+            "https://pctmix1.unblockit.uno/",
+            "https://pctmix1.unblockit.ch/",
+            "https://pctmix1.unblockit.ws/",
+            "https://pctmix1.unblockit.li/",
+            "https://pctmix.com/",
+            "https://pctmix1.com/",
+            "https://pctreload1.com/",
+            "https://maxitorrent.com",
+            "https://pctmix1.unblockit.kim/",
+            "https://atomixhq.com/"
         };
 
         public NewPCT(IIndexerConfigurationService configService, WebClient wc, Logger l, IProtectionService ps,
@@ -125,7 +132,7 @@ namespace Jackett.Common.Indexers
             : base(id: "newpct",
                    name: "NewPCT",
                    description: "NewPCT - Descargar peliculas, series y estrenos torrent gratis",
-                   link: "https://pctmix.com/",
+                   link: "https://atomixhq.one/",
                    caps: new TorznabCapabilities
                    {
                        TvSearchParams = new List<TvSearchParam>
@@ -145,7 +152,7 @@ namespace Jackett.Common.Indexers
                    configData: new ConfigurationData())
         {
             Encoding = Encoding.GetEncoding("windows-1252");
-            Language = "es-es";
+            Language = "es-ES";
             Type = "public";
 
             var voItem = new BoolConfigurationItem("Include original versions in search results") { Value = false };
@@ -205,7 +212,16 @@ namespace Jackett.Common.Indexers
                     else
                         linkText = match.Groups[1].Value;
 
-                    return new Uri(new Uri(baseLink), linkText);
+                    // take the details page link and the download page link and build a Torrent link
+                    // Details page: https://atomixhq.com/descargar/torrent/peliculas-x264-mkv/el-viaje-i-onde-dager--2021-/bluray-microhd/
+                    // Download page: https://atomtt.com/download/159843_-1634325135-El-viaje--I-onde-dager---2021---BluRay-MicroHD/
+                    // Torrent link: https://atomixhq.com/download/159843_-1634325135-El-viaje--I-onde-dager---2021---BluRay-MicroHD.torrent
+                    linkText = linkText.Remove(linkText.Length - 1, 1) + ".torrent";
+                    var linkHost = new Uri(linkText).Host;
+                    var linkBase = new Uri(baseLink).Host;
+                    var downloadLink = linkText.Replace(linkHost.ToString(), linkBase.ToString());
+
+                    return new Uri(downloadLink);
                 }
             }
 

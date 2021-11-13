@@ -44,13 +44,15 @@ namespace Jackett.Common.Indexers
         {
             public static long Peliculas => 2147483648; // 2 GB
             public static long PeliculasDvdr => 5368709120; // 5 GB
-            public static long Series => 524288000; // 500 MB
-            public static long Otros => 524288000; // 500 MB
+            public static long Series => 536870912; // 512 MB
+            public static long Otros => 536870912; // 512 MB
         }
 
         public override string[] LegacySiteLinks { get; protected set; } = {
             "https://www.divxtotal.la/",
             "https://www.divxtotal.one/",
+            "https://www.divxtotal.ch/",
+            "https://www.divxtotal.nz/",
             "https://www.divxtotal.se/"
         };
 
@@ -59,7 +61,7 @@ namespace Jackett.Common.Indexers
             : base(id: "divxtotal",
                    name: "DivxTotal",
                    description: "DivxTotal is a SPANISH site for Movies, TV series and Software",
-                   link: "https://www.divxtotal.ch/",
+                   link: "https://www.divxtotal.li/",
                    caps: new TorznabCapabilities
                    {
                        TvSearchParams = new List<TvSearchParam>
@@ -79,7 +81,7 @@ namespace Jackett.Common.Indexers
                    configData: new ConfigurationData())
         {
             Encoding = Encoding.UTF8;
-            Language = "es-es";
+            Language = "es-ES";
             Type = "public";
 
             var matchWords = new BoolConfigurationItem("Match words in title") { Value = true };

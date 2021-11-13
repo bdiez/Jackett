@@ -41,7 +41,7 @@ namespace Jackett.Common.Indexers
                    {
                        TvSearchParams = new List<TvSearchParam>
                        {
-                           TvSearchParam.Q, TvSearchParam.Season, TvSearchParam.Ep
+                           TvSearchParam.Q, TvSearchParam.Season, TvSearchParam.Ep, TvSearchParam.ImdbId
                        },
                        MovieSearchParams = new List<MovieSearchParam>
                        {
@@ -54,7 +54,8 @@ namespace Jackett.Common.Indexers
                        BookSearchParams = new List<BookSearchParam>
                        {
                            BookSearchParam.Q
-                       }
+                       },
+                       TvSearchImdbAvailable = true
                    },
                    configService: configService,
                    client: wc,
@@ -64,7 +65,7 @@ namespace Jackett.Common.Indexers
                    configData: new ConfigurationData())
         {
             Encoding = Encoding.GetEncoding("windows-1252");
-            Language = "en-us";
+            Language = "en-US";
             Type = "public";
 
             webclient.requestDelay = 2.5; // The api has a 1req/2s limit
@@ -157,6 +158,7 @@ namespace Jackett.Common.Indexers
                     response = await RequestWithCookiesAndRetryAsync(BuildSearchUrl(query));
                     jsonContent = JObject.Parse(response.ContentString);
                     break;
+                case 8: // imdb not found, see issue #12466
                 case 10: // imdb not found, see issue #1486
                 case 20: // no results found
                     // the api returns "no results" in some valid queries. we do one retry on this case but we can't do more
@@ -230,6 +232,7 @@ namespace Jackett.Common.Indexers
         private string BuildSearchUrl(TorznabQuery query)
         {
             var searchString = query.GetQueryString();
+            var episodeSearchString = query.GetEpisodeSearchString();
             var qc = new NameValueCollection
             {
                 { "token", _token },
@@ -240,7 +243,13 @@ namespace Jackett.Common.Indexers
                 { "sort", _sort }
             };
 
-            if (query.ImdbID != null)
+            if (query.IsTVSearch && !string.IsNullOrWhiteSpace(episodeSearchString) && query.ImdbID != null)
+            {
+                qc.Add("mode", "search");
+                qc.Add("search_imdb", query.ImdbID);
+                qc.Add("search_string", episodeSearchString);
+            }
+            else if (query.ImdbID != null)
             {
                 qc.Add("mode", "search");
                 qc.Add("search_imdb", query.ImdbID);

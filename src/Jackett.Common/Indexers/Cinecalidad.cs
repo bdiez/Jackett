@@ -13,7 +13,6 @@ using Jackett.Common.Services.Interfaces;
 using Jackett.Common.Utils.Clients;
 using Newtonsoft.Json.Linq;
 using NLog;
-using static Jackett.Common.Models.IndexerConfig.ConfigurationData;
 using WebClient = Jackett.Common.Utils.Clients.WebClient;
 
 namespace Jackett.Common.Indexers
@@ -32,7 +31,8 @@ namespace Jackett.Common.Indexers
             "https://www.cinecalidad.eu/",
             "https://cinecalidad.unbl0ck.xyz/",
             "https://cinecalidad.u4m.club/",
-            "https://cinecalidad.mrunblock.icu/"
+            "https://cinecalidad.mrunblock.icu/",
+            "https://www.cine-calidad.com/"
         };
 
         public Cinecalidad(IIndexerConfigurationService configService, WebClient wc, Logger l, IProtectionService ps,
@@ -40,7 +40,7 @@ namespace Jackett.Common.Indexers
             : base(id: "cinecalidad",
                    name: "Cinecalidad",
                    description: "Películas Full HD en Latino y Inglés Dual.",
-                   link: "https://www.cine-calidad.com/",
+                   link: "https://cinecalidad.website/",
                    caps: new TorznabCapabilities
                    {
                        MovieSearchParams = new List<MovieSearchParam> { MovieSearchParam.Q }
@@ -53,15 +53,10 @@ namespace Jackett.Common.Indexers
                    configData: new ConfigurationData())
         {
             Encoding = Encoding.UTF8;
-            Language = "es-es";
+            Language = "es-ES";
             Type = "public";
 
             AddCategoryMapping(1, TorznabCatType.MoviesHD);
-        }
-
-        public override void LoadValuesFromJson(JToken jsonConfig, bool useProtectionService = false)
-        {
-            base.LoadValuesFromJson(jsonConfig, useProtectionService);
         }
 
         public override async Task<IndexerConfigurationStatus> ApplyConfiguration(JToken configJson)
@@ -80,12 +75,12 @@ namespace Jackett.Common.Indexers
             var releases = new List<ReleaseInfo>();
 
             var templateUrl = SiteLink;
-            templateUrl += "{0}"; // placeholder for page
+            templateUrl += "{0}?s="; // placeholder for page
 
             var maxPages = 2; // we scrape only 2 pages for recent torrents
             if (!string.IsNullOrWhiteSpace(query.GetQueryString()))
             {
-                templateUrl += "?s=" + WebUtilityHelpers.UrlEncode(query.GetQueryString(), Encoding.UTF8);
+                templateUrl += WebUtilityHelpers.UrlEncode(query.GetQueryString(), Encoding.UTF8);
                 maxPages = MaxSearchPageLimit;
             }
 
@@ -152,7 +147,7 @@ namespace Jackett.Common.Indexers
                 var parser = new HtmlParser();
                 var dom = parser.ParseDocument(response.ContentString);
 
-                var rows = dom.QuerySelectorAll("div.home_post_cont");
+                var rows = dom.QuerySelectorAll("div.postItem");
                 foreach (var row in rows)
                 {
                     var qImg = row.QuerySelector("img");
@@ -163,9 +158,8 @@ namespace Jackett.Common.Indexers
                         continue; // skip if it doesn't contain all words
                     title += " MULTi LATiN SPANiSH 1080p BDRip x264";
 
-                    var poster = new Uri(GetAbsoluteUrl(qImg.GetAttribute("src")));
-                    var extract = row.QuerySelector("noscript").InnerHtml.Split('\'');
-                    var link = new Uri(GetAbsoluteUrl(extract[1]));
+                    var poster = new Uri(GetAbsoluteUrl(qImg.GetAttribute("data-large")));
+                    var link = new Uri(row.QuerySelector("a.postItem__back-link").GetAttribute("href"));
 
                     var release = new ReleaseInfo
                     {

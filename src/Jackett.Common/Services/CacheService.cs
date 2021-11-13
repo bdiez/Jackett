@@ -241,7 +241,7 @@ namespace Jackett.Common.Services
         {
             var json = GetSerializedQuery(query);
             // Compute the hash
-            return BitConverter.ToString(_sha256.ComputeHash(Encoding.ASCII.GetBytes(json)));
+            return BitConverter.ToString(_sha256.ComputeHash(Encoding.UTF8.GetBytes(json)));
         }
 
         private static string GetSerializedQuery(TorznabQuery query)
@@ -251,6 +251,9 @@ namespace Jackett.Common.Services
             // Changes in the query to improve cache hits
             // Both request must return the same results, if not we are breaking Jackett search
             json = json.Replace("\"SearchTerm\":null", "\"SearchTerm\":\"\"");
+
+            // The Cache parameter's value should not affect caching itself
+            json = json.Replace("\"Cache\":false", "\"Cache\":true");
 
             return json;
         }
