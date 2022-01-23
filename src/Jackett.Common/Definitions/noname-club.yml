@@ -17,6 +17,10 @@ settings:
     type: checkbox
     label: Strip Russian Letters
     default: true
+  - name: addrussian
+    type: checkbox
+    label: Add RUSSIAN to end of all titles to improve language detection by Sonarr and Radarr. Will cause English-only results to be misidentified.
+    default: false
   - name: sort
     type: select
     label: Sort requested from site
@@ -47,13 +51,16 @@ caps:
     - {id: 729, cat: TV, desc: " |- Развивающее Видео для детей"}
     - {id: 731, cat: TV, desc: " |- Отечественные Фильмы для детей"}
     - {id: 733, cat: TV, desc: " |- Зарубежные Фильмы для детей"}
-    - {id: 730, cat: TV, desc: " |- Отечественные Мультфильмы для детей"}
-    - {id: 732, cat: TV, desc: " |- Зарубежные Мультфильмы для детей"}
-    - {id: 230, cat: TV, desc: " |- Отечественные Мультфильмы (HD*Rip/LQ, DVDRip, SATRip,..."}
-    - {id: 659, cat: TV, desc: " |- Отечественные Мультфильмы (HD, UHD, UHD-LQ, DVD, Сборники)"}
-    - {id: 658, cat: TV, desc: " |- Отечественные Мультсериалы"}
+    - {id: 1329, cat: TV, desc: " |- Отечественные Мультфильмы 20-го века SD"}
+    - {id: 1330, cat: TV, desc: " |- Отечественные Мультфильмы 20-го века HD, FHD, UHD"}
     - {id: 1331, cat: TV, desc: " |- Отечественные мультфильмы 21-го века (SD)"}
     - {id: 1332, cat: TV, desc: " |- Отечественные мультфильмы 21-го века (HD, FHD, UHD, 3D)"}
+    - {id: 658, cat: TV, desc: " |- Отечественные Мультсериалы"}
+    - {id: 1336, cat: TV, desc: " |- Зарубежные Мультфильмы 20-го века SD"}
+    - {id: 1337, cat: TV, desc: " |- Зарубежные Мультфильмы 20-го века HD, FHD, UHD"}
+    - {id: 1338, cat: TV, desc: " |- Зарубежные Мультфильмы 21-го века SD"}
+    - {id: 1339, cat: TV, desc: " |- Зарубежные Мультфильмы 21-го века HD, FHD, UHD"}
+    - {id: 732, cat: TV, desc: " |- Зарубежные Мультфильмы для детей"}
     - {id: 231, cat: TV, desc: " |- Зарубежные Мультфильмы (HD*Rip/LQ, DVDRip, SATRip, VHSRip)"}
     - {id: 660, cat: TV, desc: " |- Зарубежные Мультфильмы (DVD, Сборники)"}
     - {id: 661, cat: TV, desc: " |- Зарубежные Мультфильмы (HD, UHD, UHD-LQ)"}
@@ -794,6 +801,11 @@ search:
       filters:
         - name: querystring
           args: f
+    title_is_rus:
+      selector: a[href^="viewtopic.php?t="] > b
+      filters:
+        - name: re_replace
+          args: ["[^А-Яа-яЁё]+", ""]
     title:
       selector: a[href^="viewtopic.php?t="] > b
       filters:
@@ -815,6 +827,10 @@ search:
           args: ["WEBDLRip", "WEBDL"]
         - name: replace
           args: ["HDTVRip", "HDTV"]
+        - name: append
+          args: "{{ if .Result.title_is_rus }} - RUSSIAN{{ else }}{{ end }}"
+        - name: re_replace
+          args: ["(.+?) - RUSSIAN", "{{ if .Config.addrussian }}$1 - RUSSIAN{{ else }}$1{{ end }}"]
     details:
       selector: a[href^="viewtopic.php?t="]
       attribute: href
